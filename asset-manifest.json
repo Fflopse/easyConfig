@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "https://Fflopse.github.io/easyConfig/static/css/main.975a652d.css",
-    "main.js": "https://Fflopse.github.io/easyConfig/static/js/main.432cf780.js",
-    "static/js/453.520e1735.chunk.js": "https://Fflopse.github.io/easyConfig/static/js/453.520e1735.chunk.js",
-    "index.html": "https://Fflopse.github.io/easyConfig/index.html",
-    "main.975a652d.css.map": "https://Fflopse.github.io/easyConfig/static/css/main.975a652d.css.map",
-    "main.432cf780.js.map": "https://Fflopse.github.io/easyConfig/static/js/main.432cf780.js.map",
-    "453.520e1735.chunk.js.map": "https://Fflopse.github.io/easyConfig/static/js/453.520e1735.chunk.js.map"
+    "main.css": "https://easyconfig.fflopse.de/static/css/main.975a652d.css",
+    "main.js": "https://easyconfig.fflopse.de/static/js/main.dc14fdaa.js",
+    "static/js/453.520e1735.chunk.js": "https://easyconfig.fflopse.de/static/js/453.520e1735.chunk.js",
+    "index.html": "https://easyconfig.fflopse.de/index.html",
+    "main.975a652d.css.map": "https://easyconfig.fflopse.de/static/css/main.975a652d.css.map",
+    "main.dc14fdaa.js.map": "https://easyconfig.fflopse.de/static/js/main.dc14fdaa.js.map",
+    "453.520e1735.chunk.js.map": "https://easyconfig.fflopse.de/static/js/453.520e1735.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.975a652d.css",
-    "static/js/main.432cf780.js"
+    "static/js/main.dc14fdaa.js"
   ]
 }
