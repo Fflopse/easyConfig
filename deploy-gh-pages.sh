@@ -22,7 +22,7 @@ jq '.scripts.deploy = "gh-pages -d build"' package.json > temp.json && mv temp.j
 echo "PUBLIC_URL=https://config.fflopse.de" > .env
 
 # Set remote URL to HTTPS
-git remote set-url origin https://github.com/$username/$repo_name.git
+git remote set-url origin https:npm//github.com/$username/$repo_name.git
 
 # Build and deploy
 GIT_USER=$username npm run deploy

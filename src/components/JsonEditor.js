@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AlertCircle, GripVertical, Plus, ChevronDown, ChevronUp, Copy, Box, Square, Maximize2, Minimize2 } from 'lucide-react';
+import { AlertCircle, GripVertical, Plus, ChevronDown, ChevronUp, Copy, Box, Square, Maximize2, Minimize2, Upload } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import * as THREE from 'three';
@@ -115,11 +115,14 @@ const JsonEditor = () => {
     const [json, setJson] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [fileName, setFileName] = useState('');
-    const [bulkMove, setBulkMove] = useState({x: 0, y: 0, z: 0});
+    const [bulkMove, setBulkMove] = useState({ x: 0, y: 0, z: 0 });
     const [showMoveAll, setShowMoveAll] = useState(false);
     const [showJsonDisplay, setShowJsonDisplay] = useState(false);
     const [is3DView, setIs3DView] = useState(true);
     const [showVisualization, setShowVisualization] = useState(false);
+    const [urlInput, setUrlInput] = useState('');
+    const [jsonInput, setJsonInput] = useState('');
+    const [fetchError, setFetchError] = useState(null);
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -136,6 +139,29 @@ const JsonEditor = () => {
         reader.readAsText(file);
     };
 
+    const handleUrlFetch = async () => {
+        try {
+            setFetchError(null);
+            let url = urlInput.trim();
+
+            if (url.startsWith('https://paste.cytooxien.de/') && !url.includes('/raw/')) {
+                const pasteId = url.split('/').pop();
+                url = `https://paste.cytooxien.de/raw/${pasteId}`;
+            }
+
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setJson(data);
+            setFileName(url.split('/').pop() || 'Fetched JSON');
+        } catch (error) {
+            console.error('Error fetching JSON:', error);
+            setFetchError('Could not fetch the JSON from the URL provided. Maybe CORS is not enabled for the source? (paste.cytooxien.de not suppported)');
+        }
+    };
+
     const handleDownload = () => {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, 2));
         const downloadAnchorNode = document.createElement('a');
@@ -144,6 +170,18 @@ const JsonEditor = () => {
         document.body.appendChild(downloadAnchorNode);
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
+    };
+
+    const handleJsonPaste = () => {
+        try {
+            const parsedJson = JSON.parse(jsonInput);
+            setJson(parsedJson);
+            setFileName('Pasted JSON');
+            setFetchError(null);
+        } catch (error) {
+            console.error('Error parsing pasted JSON:', error);
+            setFetchError('Error parsing pasted JSON. Please check the format. Paste must not include line numbers. Please paste from paste.cytooxien.de/RAW/...');
+        }
     };
 
     const handleMapParamChange = (param, value) => {
@@ -247,27 +285,77 @@ const JsonEditor = () => {
                 easy config
             </h1>
 
-            <div className="mb-6">
-                <label className="block mb-2">
-                    <span className="text-lg font-semibold mr-4">Upload JSON:</span>
-                    <input
-                        type="file"
-                        onChange={handleFileUpload}
-                        className="text-sm text-gray-300
-            file:mr-4 file:py-2 file:px-4
-            file:rounded-full file:border-0
-            file:text-sm file:font-medium
-            file:bg-gray-700 file:text-gray-300
-            hover:file:bg-gray-600
-          "
-                    />
-                </label>
-                {fileName && (
-                    <p className="mt-2 text-sm text-gray-400">
-                        Uploaded file: {fileName}
-                    </p>
-                )}
+            <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex flex-col">
+                    <label className="text-lg font-semibold mb-2">from JSON / text file:</label>
+                    <div className="flex-grow flex flex-col">
+                        <div className="relative flex-grow flex items-center">
+                            <input
+                                type="file"
+                                onChange={handleFileUpload}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                            <div className="w-full bg-gray-700 text-gray-300 px-3 py-2 rounded border border-gray-600 flex items-center justify-between">
+                                <span className="truncate">
+                                    {fileName || "Choose file"}
+                                </span>
+                                <Upload size={20} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col">
+                    <label className="text-lg font-semibold mb-2">fetch from URL:</label>
+                    <div className="flex-grow flex flex-col">
+                        <input
+                            type="text"
+                            value={urlInput}
+                            onChange={(e) => setUrlInput(e.target.value)}
+                            placeholder="Enter URL"
+                            className="flex-grow bg-gray-700 text-gray-100 px-3 py-2 rounded-t border border-gray-600"
+                        />
+                        <button
+                            onClick={handleUrlFetch}
+                            className="bg-blue-600 text-white px-4 py-2 rounded-b hover:bg-blue-700"
+                        >
+                            Fetch
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex flex-col">
+                    <label className="text-lg font-semibold mb-2">paste JSON:</label>
+                    <div className="flex-grow flex flex-col">
+                        <textarea
+                            value={jsonInput}
+                            onChange={(e) => setJsonInput(e.target.value)}
+                            placeholder="Paste your JSON here"
+                            className="flex-grow bg-gray-700 text-gray-100 px-3 py-2 rounded-t border border-gray-600 resize-none"
+                        />
+                        <button
+                            onClick={handleJsonPaste}
+                            className="bg-blue-600 text-white px-4 py-2 rounded-b hover:bg-blue-700"
+                        >
+                            Parse JSON
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            {fetchError && (
+                <Alert variant="destructive" className="mt-4 mb-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{fetchError}</AlertDescription>
+                </Alert>
+            )}
+
+            {fileName && (
+                <p className="mt-2 mb-4 text-sm text-gray-400">
+                    Loaded: {fileName}
+                </p>
+            )}
 
             {json && (
                 <div className="space-y-6">
@@ -481,7 +569,7 @@ const JsonEditor = () => {
                     <AlertCircle className="h-4 w-4"/>
                     <AlertTitle>No JSON Loaded</AlertTitle>
                     <AlertDescription>
-                        Please upload a JSON file to start editing.
+                        Please provide a JSON to start editing.
                     </AlertDescription>
                 </Alert>
             )}
