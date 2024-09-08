@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "https://config.fflopse.de/static/css/main.975a652d.css",
-    "main.js": "https://config.fflopse.de/static/js/main.96ade895.js",
+    "main.css": "https://config.fflopse.de/static/css/main.709c2999.css",
+    "main.js": "https://config.fflopse.de/static/js/main.49950fa2.js",
     "static/js/453.520e1735.chunk.js": "https://config.fflopse.de/static/js/453.520e1735.chunk.js",
     "index.html": "https://config.fflopse.de/index.html",
-    "main.975a652d.css.map": "https://config.fflopse.de/static/css/main.975a652d.css.map",
-    "main.96ade895.js.map": "https://config.fflopse.de/static/js/main.96ade895.js.map",
+    "main.709c2999.css.map": "https://config.fflopse.de/static/css/main.709c2999.css.map",
+    "main.49950fa2.js.map": "https://config.fflopse.de/static/js/main.49950fa2.js.map",
     "453.520e1735.chunk.js.map": "https://config.fflopse.de/static/js/453.520e1735.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.975a652d.css",
-    "static/js/main.96ade895.js"
+    "static/css/main.709c2999.css",
+    "static/js/main.49950fa2.js"
   ]
 }
